@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Form, Row } from "react-bootstrap";
+import { Container, Form } from "react-bootstrap";
 
 const Weather = () => {
   const [city, setCity] = useState("");
@@ -17,9 +17,25 @@ const Weather = () => {
     "Friday",
     "Saturday",
   ];
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const d = new Date();
-  let day = weekday[d.getDay() + 10 - 0];
+  let day = weekday[d.getDay()];
+  const month = months[d.getMonth() + 1]; // Adding 1 because getMonth() returns zero-based index
+  const dayOfMonth = d.getDate();
 
   const fetchData = async () => {
     if (!city) {
@@ -51,61 +67,54 @@ const Weather = () => {
 
   return (
     <>
-      <Container className="d-flex justify-content-center">
-        <Row>
-          <div className=" my-5">
-            <Form onSubmit={handleSubmit}>
-              <Form.Control
-                className="form-input"
-                aria-label="Default"
-                aria-describedby="inputGroup-sizing-default"
-                placeholder="Enter city name"
-                value={city}
-                onChange={handleInputChange}
-              />
-            </Form>
-          </div>
-        </Row>
-        <Row className="wrapper-row d-flex justify-content-center align-items-center mt-5">
-          <div className="col-6 text-center">
-            <img
-              className="img-fluid"
-              src="/src/assets/sun.png"
-              alt=""
-              style={{
-                height: "250px",
-              }}
+      <div className="container-fluid">
+        <div className=" d-flex justify-content-center py-5 my-5">
+          <Form onSubmit={handleSubmit}>
+            <Form.Control
+              className="form-input"
+              aria-label="Default"
+              aria-describedby="inputGroup-sizing-default"
+              placeholder="Enter city name"
+              value={city}
+              onChange={handleInputChange}
             />
-          </div>
+          </Form>
+        </div>
+      </div>
+
+      <div className="container">
+        <div className="row">
+          {city ? (
+            <>
+              <h1>{city.toLocaleUpperCase()}</h1>
+              <p>
+                {day} {dayOfMonth} {month}
+              </p>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+      <Container>
+        <div className="row mt-5">
           <div className="col-6 ">
             {city && weatherData ? (
               <>
-                {/* <h2>{weatherData.name}</h2>
-                <p>Temperature: {weatherData.main.temp}°C</p>
-                <p>Description: {weatherData.weather[0].description}</p>
-                <p>Feels like : {weatherData.main.feels_like}°C</p>
-                <p>Humidity : {weatherData.main.humidity}%</p>
-                <p>Pressure : {weatherData.main.pressure}</p>
-                <p>Wind Speed : {weatherData.wind.speed}m/s</p> */}
-                <h4>Today</h4>
-                <h1 className="mb-5">{city.toLocaleUpperCase()}</h1>
                 <p>
                   Temperature: {getCelsius(weatherData.currentConditions.temp)}
                   °C
                 </p>
                 <p>{weatherData.description}</p>
-                <p>Day:{day}</p>
                 {/* <p>Day 1: {getCelsius(weatherData.days[0].temp)}</p>
                 <p>Day:{day}</p>
-                <p>Day 2: {getCelsius(weatherData.days[1].temp)}</p>
-                <p>Day 3: {getCelsius(weatherData.days[2].temp)}</p>
-                <p>Day 4: {getCelsius(weatherData.days[3].temp)}</p> */}
+                <p>Day 2: {getCelsius(weatherData.days[1].temp)}</p> */}
               </>
             ) : (
               <p>Loading weather data...</p>
             )}
           </div>
-        </Row>
+        </div>
       </Container>
     </>
   );
