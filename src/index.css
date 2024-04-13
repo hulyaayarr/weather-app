@@ -1,0 +1,19 @@
+.form-input {
+  border-radius: 16px;
+  width: 600px;
+  height: 40px;
+}
+.form-input::placeholder {
+  font-size: 14px;
+  color: gray;
+  background-position: 0%;
+  background-image: url("./assets/search-solid.svg");
+  background-repeat: no-repeat;
+  background-size: 7%;
+  padding: 22px 50px;
+}
+.wrapper-row {
+  height: 40vh;
+  width: 1000px;
+  border: 1px solid black;
+}
