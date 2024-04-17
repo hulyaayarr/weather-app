@@ -6,7 +6,7 @@ const Weather = () => {
   const [city, setCity] = useState("");
   const [weatherData, setWeatherData] = useState(null);
   const getCelsius = (fahrenheit) => {
-    return (((fahrenheit - 32) * 5) / 9).toFixed(0);
+    return ((fahrenheit - 32) / 1.8).toFixed(0);
   };
   const weekday = [
     "Sunday",
@@ -82,11 +82,11 @@ const Weather = () => {
         </div>
       </div>
 
-      <div className="container">
-        <div className="row">
+      <div className="container-fluid">
+        <div className="row mx-5 ">
           {city ? (
             <>
-              <h1>{city.toLocaleUpperCase()}</h1>
+              <h1>{weatherData ? weatherData.resolvedAddress : ""}</h1>
               <p>
                 {day} {dayOfMonth} {month}
               </p>
@@ -98,20 +98,71 @@ const Weather = () => {
       </div>
       <Container>
         <div className="row mt-5">
-          <div className="col-6 ">
+          <div className="col-7 ">
             {city && weatherData ? (
-              <>
-                <p>
-                  Temperature: {getCelsius(weatherData.currentConditions.temp)}
-                  °C
-                </p>
-                <p>{weatherData.description}</p>
+              <div>
+                <div className="d-flex align-items-center">
+                  <img
+                    className="img-fluid cloud-image"
+                    src="/src/assets/cloud.png"
+                  />
+                  <div className="big-font">
+                    {getCelsius(weatherData.currentConditions.temp)}
+                    °C
+                  </div>
+                </div>
+                <div
+                  className="d-flex justify-content-end"
+                  style={{
+                    width: "280px",
+                  }}
+                >
+                  {weatherData.days[0].conditions}
+                </div>
                 {/* <p>Day 1: {getCelsius(weatherData.days[0].temp)}</p>
                 <p>Day:{day}</p>
                 <p>Day 2: {getCelsius(weatherData.days[1].temp)}</p> */}
-              </>
+              </div>
             ) : (
               <p>Loading weather data...</p>
+            )}
+          </div>
+          <div className="col-5 background-panel">
+            {city && weatherData ? (
+              <div className="row">
+                <div className="col-4 panel-data">
+                  <div className="text-center py-4">
+                    {getCelsius(weatherData.days[0].tempmax)}°C
+                    <p>Max</p>
+                  </div>
+                  <div className="text-center">
+                    {getCelsius(weatherData.days[0].tempmin)}°C
+                    <p>Min</p>
+                  </div>
+                </div>
+                <div className="col-4 panel-data">
+                  <div className="text-center py-4">
+                    {weatherData.days[0].sunrise}
+                    <p>Sunrise</p>
+                  </div>
+                  <div className="text-center">
+                    {weatherData.days[0].sunset}
+                    <p>Sunset</p>
+                  </div>
+                </div>
+                <div className="col-4  panel-data">
+                  <div className="text-center py-4">
+                    {weatherData.days[0].sunrise}
+                    <p>Sunrise</p>
+                  </div>
+                  <div className="text-center">
+                    {weatherData.days[0].sunset}
+                    <p>Sunset</p>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              ""
             )}
           </div>
         </div>

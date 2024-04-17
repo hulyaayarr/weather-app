@@ -1,3 +1,11 @@
+body {
+  /* background-image: url("./assets/clouds1.jpg");
+  background-repeat: no-repeat;
+  background-size: cover; */
+  background-color: black;
+  color: #ffff;
+}
+
 .form-input {
   border-radius: 16px;
   width: 600px;
@@ -16,4 +24,21 @@
   height: 40vh;
   width: 1000px;
   border: 1px solid black;
+}
+.cloud-image {
+  height: 120px;
+  width: 160px;
+}
+.big-font {
+  font-size: 64px;
+}
+.background-panel {
+  background-color: #ffffff24;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.panel-data {
+  font-size: larger;
 }
