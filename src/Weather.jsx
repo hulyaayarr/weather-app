@@ -65,6 +65,37 @@ const Weather = () => {
     fetchData();
   };
 
+  const getHour = (weatherData, city) => {
+    const currentHour = new Date().getHours();
+    const hours = [];
+
+    for (let i = currentHour; i <= 24; i++) {
+      hours.push(i % 24);
+    }
+
+    if (weatherData && city) {
+      return hours.map((hour, index) => (
+        <div className="panel-data" key={index}>
+          <div className="text-center py-4">
+            {getCelsius(weatherData.days[0].hours[hour].temp)}°C
+            <p>
+              {(() => {
+                let time = weatherData.days[0].hours[hour].datetime;
+                let hours = time.split(":")[0];
+                let minutes = time.split(":")[1];
+                let period = hours < 12 ? "AM" : "PM";
+                hours = hours % 12 || 12; // Convert to 12-hour format
+                return `${hours}:${minutes} ${period}`;
+              })()}
+            </p>
+          </div>
+        </div>
+      ));
+    }
+
+    return [];
+  };
+
   return (
     <>
       <div className="container-fluid">
@@ -119,17 +150,14 @@ const Weather = () => {
                 >
                   {weatherData.days[0].conditions}
                 </div>
-                {/* <p>Day 1: {getCelsius(weatherData.days[0].temp)}</p>
-                <p>Day:{day}</p>
-                <p>Day 2: {getCelsius(weatherData.days[1].temp)}</p> */}
               </div>
             ) : (
               <p>Loading weather data...</p>
             )}
           </div>
-          <div className="col-5 background-panel">
+          <div className="col-5 ">
             {city && weatherData ? (
-              <div className="row">
+              <div className="row background-panel">
                 <div className="col-4 panel-data">
                   <div className="text-center py-4">
                     {getCelsius(weatherData.days[0].tempmax)}°C
@@ -142,21 +170,26 @@ const Weather = () => {
                 </div>
                 <div className="col-4 panel-data">
                   <div className="text-center py-4">
-                    {weatherData.days[0].sunrise}
-                    <p>Sunrise</p>
+                    {weatherData.days[0].windgust.toFixed(0)}km/h
+                    <p>Wind</p>
                   </div>
                   <div className="text-center">
-                    {weatherData.days[0].sunset}
-                    <p>Sunset</p>
+                    {weatherData.days[0].precipprob}%<p>Rain</p>
                   </div>
                 </div>
                 <div className="col-4  panel-data">
                   <div className="text-center py-4">
-                    {weatherData.days[0].sunrise}
+                    {weatherData.days[0].sunrise
+                      .split(":")
+                      .slice(0, 2)
+                      .join(":")}
                     <p>Sunrise</p>
                   </div>
                   <div className="text-center">
-                    {weatherData.days[0].sunset}
+                    {weatherData.days[0].sunset
+                      .split(":")
+                      .slice(0, 2)
+                      .join(":")}
                     <p>Sunset</p>
                   </div>
                 </div>
@@ -167,6 +200,17 @@ const Weather = () => {
           </div>
         </div>
       </Container>
+      <div className="container-fluid">
+        {city && weatherData ? (
+          <div className="row">
+            <div className="container-scroll">
+              <div className="row">{getHour(weatherData, city)}</div>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
+      </div>
     </>
   );
 };
