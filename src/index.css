@@ -44,6 +44,21 @@ body {
   font-size: larger;
 }
 .container-scroll {
-  overflow-y: auto;
-  white-space: nowrap;
+  /* width: 100vh; */
+  overflow-y: hidden;
+  overflow-x: scroll;
+
+  flex-wrap: nowrap;
+  padding-left: 12px;
+}
+.hour-panel {
+  display: flex;
+
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255, 255, 255, 0.2);
+  justify-content: center;
+  margin-right: 25px;
+  margin-top: 35px;
+  margin-bottom: 35px;
 }

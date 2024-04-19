@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
+import cloudy from "./assets/background/cloudy.jpg";
 
 const Weather = () => {
   const [city, setCity] = useState("");
@@ -36,6 +37,18 @@ const Weather = () => {
   let day = weekday[d.getDay()];
   const month = months[d.getMonth() + 1]; // Adding 1 because getMonth() returns zero-based index
   const dayOfMonth = d.getDate();
+  const monthNumber = d.getMonth() + 1;
+  console.log("dayofmonth", dayOfMonth, monthNumber);
+  const getTimeForCity = (weatherData) => {
+    if (weatherData && weatherData.timezone) {
+      const cityTime = new Date().toLocaleString("en-US", {
+        timeZone: weatherData.timezone,
+      });
+      return new Date(cityTime);
+    }
+    // Default to current time if timezone information is not available
+    return new Date();
+  };
 
   const fetchData = async () => {
     if (!city) {
@@ -65,8 +78,8 @@ const Weather = () => {
     fetchData();
   };
 
-  const getHour = (weatherData, city) => {
-    const currentHour = new Date().getHours();
+  const getHour = (weatherData, city, dayOfMonth, month) => {
+    const currentHour = getTimeForCity(weatherData).getHours();
     const hours = [];
 
     for (let i = currentHour; i <= 24; i++) {
@@ -75,10 +88,15 @@ const Weather = () => {
 
     if (weatherData && city) {
       return hours.map((hour, index) => (
-        <div className="panel-data" key={index}>
+        <div className="hour-panel" key={index}>
           <div className="text-center py-4">
-            {getCelsius(weatherData.days[0].hours[hour].temp)}°C
-            <p>
+            <p className="pb-0 mb-0">{`${dayOfMonth}.${month}`}</p>
+            <img
+              className="img-fluid icons"
+              src={`/src/assets/icons/${weatherData.days[0].hours[hour].icon}.png`}
+              alt=""
+            />
+            <p className="pt-0 mt-0 ">
               {(() => {
                 let time = weatherData.days[0].hours[hour].datetime;
                 let hours = time.split(":")[0];
@@ -88,6 +106,9 @@ const Weather = () => {
                 return `${hours}:${minutes} ${period}`;
               })()}
             </p>
+            <p className="pt-0 mt-0 fs-4">
+              {getCelsius(weatherData.days[0].hours[hour].temp)}°C
+            </p>
           </div>
         </div>
       ));
@@ -95,11 +116,15 @@ const Weather = () => {
 
     return [];
   };
-
+  const backgroundStyle = {
+    backgroundImage: `url("/assets/background/cloudy.jpg")`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+  };
   return (
     <>
-      <div className="container-fluid">
-        <div className=" d-flex justify-content-center py-5 my-5">
+      <div className="container-fluid" style={backgroundStyle}>
+        <div className=" d-flex justify-content-center  my-5">
           <Form onSubmit={handleSubmit}>
             <Form.Control
               className="form-input"
@@ -111,9 +136,6 @@ const Weather = () => {
             />
           </Form>
         </div>
-      </div>
-
-      <div className="container-fluid">
         <div className="row mx-5 ">
           {city ? (
             <>
@@ -126,18 +148,17 @@ const Weather = () => {
             <></>
           )}
         </div>
-      </div>
-      <Container>
-        <div className="row mt-5">
+        <div className="row mt-5 mx-5 px-5">
           <div className="col-7 ">
             {city && weatherData ? (
               <div>
                 <div className="d-flex align-items-center">
                   <img
-                    className="img-fluid cloud-image"
-                    src="/src/assets/cloud.png"
+                    className="img-fluid "
+                    src={`/src/assets/icons/${weatherData.days[0].icon}.png`}
+                    style={{ height: "100px" }}
                   />
-                  <div className="big-font">
+                  <div className="big-font ps-4">
                     {getCelsius(weatherData.currentConditions.temp)}
                     °C
                   </div>
@@ -145,7 +166,7 @@ const Weather = () => {
                 <div
                   className="d-flex justify-content-end"
                   style={{
-                    width: "280px",
+                    width: "240px",
                   }}
                 >
                   {weatherData.days[0].conditions}
@@ -155,7 +176,7 @@ const Weather = () => {
               <p>Loading weather data...</p>
             )}
           </div>
-          <div className="col-5 ">
+          <div className="col-5">
             {city && weatherData ? (
               <div className="row background-panel">
                 <div className="col-4 panel-data">
@@ -199,14 +220,15 @@ const Weather = () => {
             )}
           </div>
         </div>
-      </Container>
-      <div className="container-fluid">
         {city && weatherData ? (
-          <div className="row">
-            <div className="container-scroll">
-              <div className="row">{getHour(weatherData, city)}</div>
+          <>
+            <div className="row ms-5">
+              <p className="fs-1">Forecast</p>
             </div>
-          </div>
+            <div className="row container-scroll ms-5">
+              {getHour(weatherData, city, dayOfMonth, monthNumber)}
+            </div>
+          </>
         ) : (
           ""
         )}
