@@ -117,14 +117,18 @@ const Weather = () => {
     return [];
   };
   const backgroundStyle = {
-    backgroundImage: `url("/assets/background/cloudy.jpg")`,
+    backgroundImage: weatherData
+      ? `url(/src/assets/background/${weatherData.days[0].icon}.jpg)`
+      : "",
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
+    height: "100vh",
   };
+
   return (
     <>
       <div className="container-fluid" style={backgroundStyle}>
-        <div className=" d-flex justify-content-center  my-5">
+        <div className=" d-flex justify-content-center  py-5">
           <Form onSubmit={handleSubmit}>
             <Form.Control
               className="form-input"
@@ -137,9 +141,9 @@ const Weather = () => {
           </Form>
         </div>
         <div className="row mx-5 ">
-          {city ? (
+          {city && weatherData ? (
             <>
-              <h1>{weatherData ? weatherData.resolvedAddress : ""}</h1>
+              <h1>{weatherData.resolvedAddress}</h1>
               <p>
                 {day} {dayOfMonth} {month}
               </p>
